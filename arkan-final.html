@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أركان — الوكيل الذكي | ARKAN Smart Agent</title>
+<meta name="description" content="أركان — وكيل ذكي لتحضير الدروس وإدارة المهام التعليمية">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800;900&family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#F7F5EF;--bg2:#FFFFFF;--bg3:#FFFAF0;--tx:#2D2A24;--tx2:#5C5647;--tx3:#9A9488;--gold:#C6922A;--gl:#FFF5E0;--em:#1B7A5A;--el:#E5F5EE;--sa:#2563A8;--sl:#E8F1FC;--ru:#C43B50;--rl:#FCE8EC;--vi:#7C3AED;--vl:#F0E8FC;--or:#D97706;--ol:#FEF3E0;--sh:0 2px 12px rgba(45,42,36,0.06)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gl);border-radius:5px}
+body{background:var(--bg);font-family:'Readex Pro','Noto Kufi Arabic',sans-serif;color:var(--tx);min-height:100vh;overflow:hidden}
+@keyframes bn{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes sp{to{transform:rotate(360deg)}}
+.app{display:flex;height:100vh}
+.side{width:275px;background:var(--bg2);border-left:1px solid rgba(0,0,0,0.05);display:flex;flex-direction:column;z-index:10;transition:width .3s;overflow:hidden;flex-shrink:0;box-shadow:2px 0 20px rgba(0,0,0,0.02)}
+.side.h{width:0;border:none}
+.slog{padding:20px 18px;border-bottom:1px solid rgba(0,0,0,0.04);display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,var(--bg3),var(--bg2))}
+.sic{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#C6922A,#E0AA3E);display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 4px 14px rgba(198,146,42,0.3);position:relative}
+.sdt{position:absolute;bottom:-2px;right:-2px;width:13px;height:13px;border-radius:50%;background:var(--em);border:2.5px solid var(--bg2)}
+.sts{padding:12px 14px;border-bottom:1px solid rgba(0,0,0,0.04);display:flex;gap:7px}
+.st{flex:1;padding:9px 6px;border-radius:11px;text-align:center;transition:transform .2s}
+.st:hover{transform:translateY(-2px)}
+.mds{padding:12px 10px;flex:1;overflow-y:auto}
+.mb{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;width:100%;border:none;font-family:'Readex Pro',sans-serif;font-size:13px;text-align:right;cursor:pointer;transition:all .25s;margin-bottom:3px;background:transparent;border-right:3px solid transparent}
+.mb:hover{transform:translateX(-3px);box-shadow:var(--sh)}
+.mb .mi{font-size:19px;width:35px;height:35px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.sf{padding:10px 14px;border-top:1px solid rgba(0,0,0,0.04);font-size:10px;color:var(--tx3);text-align:center;background:var(--bg3)}
+.mn{flex:1;display:flex;flex-direction:column;z-index:5;min-width:0}
+.hd{padding:12px 20px;background:var(--bg2);border-bottom:1px solid rgba(0,0,0,0.04);display:flex;align-items:center;gap:12px;box-shadow:0 1px 6px rgba(0,0,0,0.02)}
+.hm{background:var(--bg);border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:7px 10px;cursor:pointer;color:var(--tx2);font-size:15px;transition:all .2s}
+.hm:hover{background:var(--gl);color:var(--gold)}
+.bdg{display:flex;align-items:center;gap:7px;padding:5px 14px;border-radius:22px;font-size:12px;font-weight:600;box-shadow:var(--sh)}
+.hn{background:var(--bg);border:1px solid rgba(0,0,0,0.05);border-radius:10px;padding:7px 14px;cursor:pointer;color:var(--tx2);font-size:11px;font-family:'Readex Pro',sans-serif;margin-right:auto;transition:all .2s}
+.hn:hover{background:var(--rl);color:var(--ru)}
+.hp{display:flex;align-items:center;gap:8px;padding:5px 14px;border-radius:22px;background:var(--gl);border:1px solid rgba(198,146,42,0.12);margin-right:auto}
+.hsp{width:11px;height:11px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:sp .8s linear infinite}
+.ms{flex:1;overflow-y:auto;padding:22px 18px;display:flex;flex-direction:column;gap:14px;background:var(--bg)}
+.wl{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:10px}
+.wlg{width:96px;height:96px;border-radius:26px;margin:0 auto 14px;background:linear-gradient(135deg,#C6922A,#E0AA3E);display:flex;align-items:center;justify-content:center;font-size:48px;box-shadow:0 10px 36px rgba(198,146,42,0.25);animation:fl 5s ease-in-out infinite}
+.wl h1{font-size:34px;font-weight:900;font-family:'Noto Kufi Arabic',sans-serif}
+.wl .su{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:4px;margin-bottom:6px}
+.wl p{font-size:14px;color:var(--tx2);max-width:430px;line-height:2;margin:0 auto}
+.qc{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:540px}
+.qb{padding:10px 16px;border-radius:12px;border:1px solid;font-size:12px;font-weight:500;cursor:pointer;font-family:'Readex Pro',sans-serif;display:flex;align-items:center;gap:6px;transition:all .25s;box-shadow:var(--sh)}
+.qb:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(45,42,36,0.1)}
+.fts{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;max-width:500px;width:100%}
+.ft{padding:18px 12px;border-radius:14px;text-align:center;border:1px solid rgba(0,0,0,0.03);box-shadow:var(--sh);transition:transform .2s;background:var(--bg2)}
+.ft:hover{transform:translateY(-3px)}
+.mg{animation:fu .3s ease-out;display:flex;gap:10px;max-width:85%}
+.mg.u{align-self:flex-end}
+.mg.b{align-self:flex-start}
+.mav{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;margin-top:4px;box-shadow:var(--sh)}
+.mbb{padding:15px 18px;border-radius:16px;line-height:1.9;font-size:13.5px;box-shadow:var(--sh)}
+.mg.u .mbb{border-radius:16px 16px 4px 16px;padding:12px 18px;font-size:14px;color:#fff}
+.mg.b .mbb{background:var(--bg2);border:1px solid rgba(0,0,0,0.04)}
+.mbb h3{font-size:15px;font-weight:700;margin:12px 0 5px;font-family:'Noto Kufi Arabic',sans-serif}
+.mbb h4{font-size:14px;font-weight:600;margin:8px 0 3px}
+.mbb .sp{display:flex;gap:8px;margin:3px 0;padding:5px 10px 5px 0;border-right:3px solid;border-radius:0 8px 8px 0}
+.mbb .bl{display:flex;gap:8px;margin:2px 0;padding-right:10px;color:var(--tx2)}
+.mbb p{margin:3px 0;color:var(--tx2);line-height:1.95}
+.mt{font-size:9px;color:var(--tx3);margin-top:6px}
+.td{display:flex;gap:5px;padding:4px 0;align-items:center}
+.pc{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.ps{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:10px;transition:all .3s}
+.pn{width:23px;height:23px;border-radius:50%;font-size:10px;font-weight:700;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ia{padding:14px 20px;background:var(--bg2);border-top:1px solid rgba(0,0,0,0.04);box-shadow:0 -1px 8px rgba(0,0,0,0.02)}
+.ib{display:flex;align-items:flex-end;gap:9px;background:var(--bg);border:2px solid rgba(198,146,42,0.12);border-radius:14px;padding:4px 4px 4px 12px;transition:border-color .3s}
+.ib:focus-within{border-color:var(--gold);box-shadow:0 0 0 4px rgba(198,146,42,0.08)}
+.ib textarea{flex:1;background:transparent;border:none;color:var(--tx);font-size:14px;font-family:'Readex Pro',sans-serif;resize:none;line-height:1.6;padding:10px 0;direction:rtl;min-height:24px;max-height:100px;outline:none}
+.ib textarea::placeholder{color:var(--tx3)}
+.sb{width:42px;height:42px;border-radius:12px;border:none;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;transition:all .2s;color:#fff}
+.sb:hover{transform:scale(1.08)}
+.bc{display:flex;justify-content:center;gap:7px;margin-top:9px;flex-wrap:wrap}
+.bci{padding:5px 12px;border-radius:9px;background:var(--bg);border:1px solid rgba(0,0,0,0.05);color:var(--tx3);font-size:10px;font-family:'Readex Pro',sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .2s}
+.bci:hover{transform:translateY(-2px);box-shadow:var(--sh);color:var(--gold)}
+@media(max-width:768px){.side{width:240px}.fts{grid-template-columns:repeat(2,1fr)}.mg{max-width:95%}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
+const AK="AIzaSyDK-hKqfbBb6u2AgKxTepAg6jBJMemZnQY";
+const AU="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+AK;
+const MD=[
+{id:"lesson",n:"تحضير الدروس",i:"📚",c:"#C6922A",l:"#FFF5E0",g:"linear-gradient(135deg,#C6922A,#E0AA3E)",d:"خطط دروس اللغة العربية",p:"أنت أركان — وكيل ذكي متخصص في تحضير دروس اللغة العربية لمدرسة طارق بن زياد الإعدادية للبنين في قطر. أنشئ خطط دروس شاملة تتضمن: الأهداف السلوكية، الكفايات الأساسية والخاصة، استراتيجيات التدريس، التقويم القبلي والبنائي والختامي، الأنشطة الصفية واللاصفية، التمايز، والربط بين المواد."},
+{id:"tasks",n:"إدارة المهام",i:"⚡",c:"#2563A8",l:"#E8F1FC",g:"linear-gradient(135deg,#2563A8,#3B82D6)",d:"تنظيم وتنفيذ المهام",p:"أنت أركان — وكيل ذكي لإدارة مهام المعلمين. ساعد في تنظيم المهام وتحديد الأولويات وتقسيمها لخطوات."},
+{id:"files",n:"معالجة الملفات",i:"📄",c:"#1B7A5A",l:"#E5F5EE",g:"linear-gradient(135deg,#1B7A5A,#28A87A)",d:"إنشاء وتنسيق المستندات",p:"أنت أركان — وكيل ذكي لمعالجة الملفات والمستندات التعليمية."},
+{id:"research",n:"البحث والتحليل",i:"🔍",c:"#C43B50",l:"#FCE8EC",g:"linear-gradient(135deg,#C43B50,#E05468)",d:"بحث تربوي وتحليل",p:"أنت أركان — وكيل ذكي للبحث والتحليل التربوي."},
+{id:"creative",n:"الإبداع والكتابة",i:"✨",c:"#7C3AED",l:"#F0E8FC",g:"linear-gradient(135deg,#7C3AED,#9F67FF)",d:"كتابة إبداعية ومحتوى",p:"أنت أركان — وكيل ذكي للكتابة الإبداعية والمحتوى التعليمي باللغة العربية الفصحى."},
+{id:"auto",n:"التنفيذ التلقائي",i:"🤖",c:"#D97706",l:"#FEF3E0",g:"linear-gradient(135deg,#D97706,#F59E0B)",d:"سلاسل أوامر متعددة",p:"أنت أركان — وكيل ذكي متقدم لتنفيذ سلاسل أوامر معقدة خطوة بخطوة."}
+];
+const QK=[
+{l:"حضّر درس نحو",cmd:"حضّر لي درساً شاملاً في النحو عن الفاعل للصف السابع مع الأهداف والكفايات والاستراتيجيات",m:"lesson"},
+{l:"خطة أسبوعية",cmd:"أنشئ خطة أسبوعية لتدريس القراءة للصف الثامن تتضمن 5 حصص",m:"lesson"},
+{l:"نظّم مهامي",cmd:"ساعدني في تنظيم مهام هذا الأسبوع: تحضير دروس، تصحيح أوراق، اجتماع أولياء أمور",m:"tasks"},
+{l:"تقرير أداء",cmd:"أنشئ تقرير أداء شهري شامل للطلاب يتضمن نقاط القوة والضعف والتوصيات",m:"files"},
+{l:"حلّل نتائج",cmd:"حلّل نتائج اختبار اللغة العربية واقترح خطة علاجية مفصلة",m:"research"},
+{l:"مقال تربوي",cmd:"اكتب مقالاً تربوياً عن أهمية القراءة في تنمية مهارات التفكير النقدي",m:"creative"}
+];
+const PP={lesson:["تحليل المتطلبات","تحديد الأهداف","اختيار الاستراتيجيات","بناء الأنشطة","المراجعة"],tasks:["تحليل المهام","ترتيب الأولويات","تقسيم المهام","إنشاء الجدول"],files:["تحليل المتطلبات","إعداد الهيكل","كتابة المحتوى","التنسيق"],research:["تحديد المحاور","جمع البيانات","التحليل","النتائج"],creative:["فهم الموضوع","العصف الذهني","الكتابة","التنقيح"],auto:["تحليل الأمر","تقسيم لخطوات","التنفيذ","تجميع النتائج","مراجعة"]};
+
+function App(){
+const[mode,setMode]=useState("lesson");
+const[msgs,setMsgs]=useState([]);
+const[inp,setInp]=useState("");
+const[ld,setLd]=useState(false);
+const[pp,setPp]=useState([]);
+const[pi,setPi]=useState(-1);
+const[sb,setSb]=useState(window.innerWidth>768);
+const[st,setSt]=useState({t:0,l:0,k:0});
+const er=useRef(null);
+const cur=MD.find(m=>m.id===mode);
+
+useEffect(()=>{er.current?.scrollIntoView({behavior:"smooth"})},[msgs,ld]);
+const rp=useCallback(async(s)=>{setPp(s);for(let i=0;i<s.length;i++){setPi(i);await new Promise(r=>setTimeout(r,600+Math.random()*400))}setPi(s.length)},[]);
+
+const send=useCallback(async(text,mo)=>{
+if(!text.trim()||ld)return;
+const m=mo||mode;if(mo)setMode(mo);
+const mc=MD.find(x=>x.id===m);
+setMsgs(p=>[...p,{role:"user",content:text,time:new Date(),mode:m}]);
+setInp("");setLd(true);rp(PP[m]||PP.auto);
+const hist=msgs.filter(x=>x.role==="user"||x.role==="assistant").slice(-8).map(x=>({role:x.role==="user"?"user":"model",parts:[{text:x.content}]}));
+try{
+const res=await fetch(AU,{method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({system_instruction:{parts:[{text:mc.p+"\n\nقواعد:\n- رد بالعربية الفصحى\n- نظّم بعناوين ## وترقيم\n- كن شاملاً ومفصلاً"}]},contents:[...hist,{role:"user",parts:[{text:text}]}],generationConfig:{temperature:0.7,maxOutputTokens:2048}})});
+const data=await res.json();
+const reply=data.candidates?.[0]?.content?.parts?.[0]?.text||"عذراً، حدث خطأ.";
+setMsgs(p=>[...p,{role:"assistant",content:reply,time:new Date(),mode:m}]);
+setSt(s=>({t:s.t+1,l:m==="lesson"?s.l+1:s.l,k:m==="tasks"?s.k+1:s.k}));
+}catch(e){setMsgs(p=>[...p,{role:"assistant",content:"⚠️ تعذر الاتصال. تأكد من الإنترنت وحاول مرة أخرى.",time:new Date(),mode:m}]);
+}finally{setLd(false);setPp([]);setPi(-1)}
+},[mode,msgs,ld,rp]);
+
+const fmt=(t)=>t.split("\n").map((ln,i)=>{
+const x=ln.trim();
+if(!x)return React.createElement("div",{key:i,style:{height:5}});
+if(x.startsWith("## "))return React.createElement("h3",{key:i,style:{color:cur.c}},x.slice(3));
+if(x.startsWith("### "))return React.createElement("h4",{key:i},x.slice(4));
+if(x.startsWith("**")&&x.endsWith("**"))return React.createElement("p",{key:i,style:{fontWeight:700,color:"var(--tx)",margin:"6px 0 3px"}},x.slice(2,-2));
+if(x.match(/^\d+[\.\)]/))return React.createElement("div",{key:i,className:"sp",style:{borderRightColor:cur.c+"35",background:cur.l+"90"}},
+React.createElement("span",{style:{color:cur.c,fontWeight:700,flexShrink:0}},x.match(/^\d+[\.\)]/)[0]),
+React.createElement("span",null,x.replace(/^\d+[\.\)]\s*/,"")));
+if(x.startsWith("- ")||x.startsWith("* "))return React.createElement("div",{key:i,className:"bl"},
+React.createElement("span",{style:{color:cur.c}},"◆"),React.createElement("span",null,x.slice(2)));
+return React.createElement("p",{key:i},x);
+});
+
+const e=React.createElement;
+return e("div",{className:"app"},
+e("aside",{className:"side"+(sb?"":" h")},
+e("div",{className:"slog"},e("div",{className:"sic"},"🏛️",e("div",{className:"sdt"})),e("div",null,e("div",{style:{fontSize:21,fontWeight:800,fontFamily:"'Noto Kufi Arabic',sans-serif"}},"أركان"),e("div",{style:{fontSize:10,color:"var(--gold)",fontWeight:600,letterSpacing:2}},"ARKAN AGENT"))),
+e("div",{className:"sts"},[{n:st.t,l:"إجمالي",c:"var(--gold)",b:"var(--gl)"},{n:st.l,l:"دروس",c:"var(--em)",b:"var(--el)"},{n:st.k,l:"مهام",c:"var(--sa)",b:"var(--sl)"}].map((s,i)=>e("div",{key:i,className:"st",style:{background:s.b}},e("div",{style:{fontSize:17,fontWeight:800,color:s.c}},s.n),e("div",{style:{fontSize:9,marginTop:2,color:s.c+"99"}},s.l)))),
+e("div",{className:"mds"},e("div",{style:{fontSize:10,color:"var(--tx3)",fontWeight:700,marginBottom:8,paddingRight:8,letterSpacing:1.5}},"أوضاع العمل"),
+MD.map(m=>e("button",{key:m.id,className:"mb",style:{background:mode===m.id?m.l:"transparent",color:mode===m.id?m.c:"var(--tx2)",fontWeight:mode===m.id?600:400,borderRightColor:mode===m.id?m.c:"transparent"},onClick:()=>setMode(m.id)},
+e("span",{className:"mi",style:{background:mode===m.id?m.c+"15":"var(--bg)"}},m.i),
+e("div",null,e("div",{style:{fontWeight:600}},m.n),e("div",{style:{fontSize:10,opacity:.55,fontWeight:400,marginTop:1}},m.d))))),
+e("div",{className:"sf"},"🏛️ أركان — مدعوم بـ Gemini AI")),
+
+e("main",{className:"mn"},
+e("header",{className:"hd"},
+e("button",{className:"hm",onClick:()=>setSb(s=>!s)},"☰"),
+e("div",{className:"bdg",style:{background:cur.l,border:"1px solid "+cur.c+"18",color:cur.c}},e("span",null,cur.i),cur.n),
+pp.length>0&&pi<pp.length&&e("div",{className:"hp"},e("div",{className:"hsp"}),e("span",{style:{fontSize:11,color:"var(--gold)",fontWeight:600}},pp[pi]),e("span",{style:{fontSize:10,color:"var(--tx3)"}},(pi+1)+"/"+pp.length)),
+e("button",{className:"hn",onClick:()=>setMsgs([])},"✦ محادثة جديدة")),
+
+e("div",{className:"ms"},
+msgs.length===0&&e("div",{className:"wl"},
+e("div",{style:{textAlign:"center"}},e("div",{className:"wlg"},"🏛️"),e("h1",null,"أركان"),e("div",{className:"su"},"ARKAN SMART AGENT"),e("p",null,"وكيلك الذكي لتحضير الدروس وإدارة المهام التعليمية. اختر وضع العمل أو اكتب أمرك مباشرة.")),
+e("div",{className:"qc"},QK.map((q,i)=>{const mc=MD.find(x=>x.id===q.m);return e("button",{key:i,className:"qb",style:{background:mc.l,borderColor:mc.c+"22",color:mc.c},onClick:()=>send(q.cmd,q.m)},e("span",null,mc.i),q.l)})),
+e("div",{className:"fts"},[{i:"🧠",t:"ذكاء تكيّفي",d:"يفهم السياق التعليمي العربي"},{i:"⛓️",t:"تنفيذ متسلسل",d:"خطوة بخطوة مع تتبع مرئي"},{i:"📊",t:"مخرجات متنوعة",d:"دروس، تقارير، خطط، ملفات"}].map((f,i)=>e("div",{key:i,className:"ft"},e("div",{style:{fontSize:26,marginBottom:8}},f.i),e("div",{style:{fontSize:12,fontWeight:700}},f.t),e("div",{style:{fontSize:10,color:"var(--tx3)",lineHeight:1.6}},f.d))))),
+
+msgs.map((msg,i)=>{const isU=msg.role==="user";const mc=MD.find(x=>x.id===msg.mode)||cur;
+return e("div",{key:i,className:"mg "+(isU?"u":"b")},
+!isU&&e("div",{className:"mav",style:{background:mc.l,border:"1px solid "+mc.c+"18"}},mc.i),
+e("div",{className:"mbb",style:isU?{background:mc.g,border:"none",boxShadow:"0 4px 14px "+mc.c+"28"}:{}},
+isU?e("p",{style:{margin:0,color:"#fff"}},msg.content):fmt(msg.content),
+e("div",{className:"mt",style:{textAlign:isU?"left":"right",color:isU?"rgba(255,255,255,0.6)":"var(--tx3)"}},
+msg.time?.toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit"}),
+!isU&&e("span",{style:{color:mc.c,opacity:.5,marginRight:8,fontSize:9}},"⟡ "+mc.n))))}),
+
+ld&&e("div",{className:"mg b"},
+e("div",{className:"mav",style:{background:cur.l,border:"1px solid "+cur.c+"18"}},cur.i),
+e("div",{className:"mbb",style:{minWidth:180}},
+e("div",{className:"td"},[0,1,2].map(i=>e("div",{key:i,style:{width:8,height:8,borderRadius:"50%",background:cur.g,animation:"bn 1.4s ease-in-out "+(i*.18)+"s infinite"}}))),
+pp.length>0&&e("div",{className:"pc"},pp.map((s,idx)=>e("div",{key:idx,className:"ps",style:{borderRight:"3px solid "+(idx<pi?"var(--em)":idx===pi?cur.c:"#e8e5dd"),background:idx===pi?cur.l:idx<pi?"var(--el)":"transparent",opacity:idx<=pi?1:.3,borderRadius:"0 9px 9px 0"}},
+e("div",{className:"pn",style:{background:idx<pi?"var(--em)":idx===pi?cur.c:"#e8e5dd",color:idx<=pi?"#fff":"var(--tx3)"}},idx<pi?"✓":idx+1),
+e("span",{style:{fontSize:12,fontWeight:500,color:idx===pi?cur.c:idx<pi?"var(--em)":"var(--tx3)"}},s)))))),
+e("div",{ref:er})),
+
+e("div",{className:"ia"},
+e("div",{className:"ib"},
+e("textarea",{value:inp,onChange:ev=>setInp(ev.target.value),onKeyDown:ev=>{if(ev.key==="Enter"&&!ev.shiftKey){ev.preventDefault();send(inp)}},placeholder:"اكتب أمرك لأركان... ("+cur.n+")",rows:1,disabled:ld}),
+e("button",{className:"sb",disabled:!inp.trim()||ld,style:{background:inp.trim()&&!ld?cur.g:"#e8e5dd",opacity:inp.trim()&&!ld?1:.35},onClick:()=>send(inp)},"⬆")),
+e("div",{className:"bc"},QK.slice(0,4).map((q,i)=>{const mc=MD.find(x=>x.id===q.m);return e("button",{key:i,className:"bci",onClick:()=>send(q.cmd,q.m)},mc.i," ",q.l)}))))
+);
+}
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+</script>
+</body>
+</html>
