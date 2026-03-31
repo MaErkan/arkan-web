@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أركان — الوكيل الذكي | ARKAN Smart Agent</title>
+<meta name="description" content="أركان — وكيل ذكي لتحضير الدروس وإدارة المهام التعليمية">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800;900&family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#F8F6F0;--bg2:#FFFFFF;--bg3:#FFF9EF;
+--text:#2D2A24;--text2:#5C5647;--text3:#8A8476;
+--gold:#C6922A;--gold-light:#F5E6C4;--gold-bg:linear-gradient(135deg,#C6922A,#E0AA3E,#D4A032);
+--emerald:#1B7A5A;--emerald-light:#E0F5ED;--emerald-bg:linear-gradient(135deg,#1B7A5A,#28A87A);
+--sapphire:#2563A8;--sapphire-light:#E0EDFA;--sapphire-bg:linear-gradient(135deg,#2563A8,#3B82D6);
+--ruby:#C43B50;--ruby-light:#FAE0E5;--ruby-bg:linear-gradient(135deg,#C43B50,#E05468);
+--violet:#7C3AED;--violet-light:#EDE0FA;--violet-bg:linear-gradient(135deg,#7C3AED,#9F67FF);
+--orange:#D97706;--orange-light:#FEF0D6;--orange-bg:linear-gradient(135deg,#D97706,#F59E0B);
+--shadow:0 2px 12px rgba(45,42,36,0.06);--shadow-lg:0 8px 32px rgba(45,42,36,0.1);
+--radius:16px;
+}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gold-light);border-radius:6px}
+body{background:var(--bg);font-family:'Readex Pro','Noto Kufi Arabic',sans-serif;color:var(--text);min-height:100vh;overflow:hidden}
+ 
+@keyframes typeBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+ 
+.app{display:flex;height:100vh;position:relative;background:var(--bg)}
+ 
+/* Decorative BG */
+.bg-deco{position:fixed;pointer-events:none;z-index:0}
+.bg-deco-1{top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(198,146,42,0.08),transparent 70%)}
+.bg-deco-2{bottom:-80px;left:-80px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(27,122,90,0.06),transparent 70%)}
+.bg-pattern{position:fixed;inset:0;background-image:radial-gradient(rgba(198,146,42,0.04) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+ 
+/* Sidebar */
+.sidebar{width:280px;background:var(--bg2);border-left:1px solid rgba(198,146,42,0.12);display:flex;flex-direction:column;z-index:10;transition:width 0.3s;overflow:hidden;flex-shrink:0;box-shadow:4px 0 24px rgba(0,0,0,0.03)}
+.sidebar.hidden{width:0;border:none}
+ 
+.sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(198,146,42,0.1);display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,#FFF9EF,var(--bg2))}
+.logo-icon{width:48px;height:48px;border-radius:14px;background:var(--gold-bg);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 16px rgba(198,146,42,0.3);position:relative}
+.logo-dot{position:absolute;bottom:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:var(--emerald);border:3px solid var(--bg2)}
+.logo-text{font-size:22px;font-weight:800;color:var(--text);font-family:'Noto Kufi Arabic',sans-serif}
+.logo-sub{font-size:10px;color:var(--gold);font-weight:600;letter-spacing:2px}
+ 
+.stats{padding:14px 16px;border-bottom:1px solid rgba(198,146,42,0.08);display:flex;gap:8px}
+.stat{flex:1;padding:10px 8px;border-radius:12px;text-align:center;transition:transform 0.2s}
+.stat:hover{transform:translateY(-2px)}
+.stat-num{font-size:18px;font-weight:800}
+.stat-label{font-size:9px;margin-top:2px}
+ 
+.modes{padding:14px 12px;flex:1;overflow-y:auto}
+.modes-title{font-size:10px;color:var(--text3);font-weight:700;margin-bottom:10px;padding-right:8px;letter-spacing:1.5px;text-transform:uppercase}
+.mode-btn{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;width:100%;border:none;font-family:'Readex Pro','Noto Kufi Arabic',sans-serif;font-size:13px;text-align:right;cursor:pointer;transition:all 0.25s;margin-bottom:4px;background:transparent;border-right:3px solid transparent}
+.mode-btn:hover{transform:translateX(-3px);box-shadow:var(--shadow)}
+.mode-btn.active{box-shadow:var(--shadow)}
+.mode-btn .icon{font-size:20px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.mode-btn .name{font-weight:600}
+.mode-btn .desc{font-size:10px;opacity:0.6;font-weight:400;margin-top:1px}
+ 
+.sidebar-footer{padding:12px 16px;border-top:1px solid rgba(198,146,42,0.08);font-size:10px;color:var(--text3);text-align:center;background:var(--bg3)}
+ 
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;z-index:5;min-width:0}
+ 
+.header{padding:14px 22px;background:var(--bg2);border-bottom:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;gap:14px;box-shadow:0 1px 8px rgba(0,0,0,0.02)}
+.menu-btn{background:var(--bg);border:1px solid rgba(0,0,0,0.06);border-radius:10px;padding:8px 11px;cursor:pointer;color:var(--text2);font-size:16px;transition:all 0.2s}
+.menu-btn:hover{background:var(--gold-light);color:var(--gold)}
+.mode-badge{display:flex;align-items:center;gap:8px;padding:6px 16px;border-radius:24px;font-size:12px;font-weight:600;box-shadow:var(--shadow)}
+.new-chat-btn{background:var(--bg);border:1px solid rgba(0,0,0,0.06);border-radius:10px;padding:8px 16px;cursor:pointer;color:var(--text2);font-size:11px;font-family:'Readex Pro',sans-serif;margin-right:auto;transition:all 0.2s}
+.new-chat-btn:hover{background:var(--ruby-light);color:var(--ruby)}
+ 
+.header-pipe{display:flex;align-items:center;gap:8px;padding:6px 16px;border-radius:24px;background:var(--gold-light);border:1px solid rgba(198,146,42,0.15);margin-right:auto}
+.header-pipe .spinner{width:12px;height:12px;border:2px solid var(--gold);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite}
+ 
+.messages{flex:1;overflow-y:auto;padding:24px 20px;display:flex;flex-direction:column;gap:16px;background:var(--bg)}
+ 
+/* Welcome */
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:10px 0}
+.welcome-logo{width:100px;height:100px;border-radius:28px;margin:0 auto 16px;background:var(--gold-bg);display:flex;align-items:center;justify-content:center;font-size:50px;box-shadow:0 12px 40px rgba(198,146,42,0.25);animation:float 5s ease-in-out infinite}
+.welcome h1{font-size:36px;font-weight:900;color:var(--text);font-family:'Noto Kufi Arabic',sans-serif}
+.welcome .sub{font-size:12px;color:var(--gold);font-weight:700;letter-spacing:4px;margin-bottom:8px}
+.welcome p{font-size:14px;color:var(--text2);max-width:440px;line-height:2;margin:0 auto}
+ 
+.quick-cmds{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:560px}
+.quick-btn{padding:10px 18px;border-radius:12px;border:1px solid;font-size:12px;font-weight:500;cursor:pointer;font-family:'Readex Pro',sans-serif;display:flex;align-items:center;gap:6px;transition:all 0.25s;box-shadow:var(--shadow)}
+.quick-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+ 
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:520px;width:100%}
+.feature{padding:20px 14px;border-radius:16px;text-align:center;border:1px solid rgba(0,0,0,0.04);box-shadow:var(--shadow);transition:transform 0.2s;background:var(--bg2)}
+.feature:hover{transform:translateY(-4px)}
+.feature .fi{font-size:28px;margin-bottom:10px}
+.feature .ft{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px}
+.feature .fd{font-size:10px;color:var(--text3);line-height:1.6}
+ 
+/* Messages */
+.msg{animation:fadeUp 0.35s ease-out;display:flex;gap:12px;max-width:85%}
+.msg.user{align-self:flex-end}
+.msg.bot{align-self:flex-start}
+.msg-avatar{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-top:4px;box-shadow:var(--shadow)}
+.msg-bubble{padding:16px 20px;border-radius:18px;line-height:1.9;font-size:13.5px;box-shadow:var(--shadow)}
+.msg.user .msg-bubble{border-radius:18px 18px 4px 18px;padding:12px 20px;font-size:14px;color:#fff}
+.msg.bot .msg-bubble{background:var(--bg2);border:1px solid rgba(0,0,0,0.04);color:var(--text)}
+.msg-time{font-size:9px;color:var(--text3);margin-top:8px}
+.msg-mode{opacity:0.6;margin-right:8px;font-size:9px}
+ 
+.msg-bubble h3{font-size:15px;font-weight:700;margin:14px 0 6px;font-family:'Noto Kufi Arabic',sans-serif}
+.msg-bubble h4{font-size:14px;font-weight:600;color:var(--text);margin:10px 0 4px}
+.msg-bubble .step{display:flex;gap:8px;margin:4px 0;padding:6px 12px 6px 0;border-right:3px solid;border-radius:0 8px 8px 0;color:var(--text)}
+.msg-bubble .step-num{font-weight:700;flex-shrink:0}
+.msg-bubble .bullet{display:flex;gap:8px;margin:2px 0;padding-right:10px;color:var(--text2)}
+.msg-bubble .bullet-dot{flex-shrink:0}
+.msg-bubble p{margin:3px 0;color:var(--text2);line-height:1.95}
+ 
+.typing-dots{display:flex;gap:5px;padding:4px 0;align-items:center}
+.typing-dot{width:8px;height:8px;border-radius:50%}
+.pipe-container{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.pipe-step{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;transition:all 0.3s}
+.pipe-num{width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:700;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+ 
+/* Input */
+.input-area{padding:16px 22px;background:var(--bg2);border-top:1px solid rgba(0,0,0,0.05);box-shadow:0 -2px 12px rgba(0,0,0,0.02)}
+.input-box{display:flex;align-items:flex-end;gap:10px;background:var(--bg);border:2px solid rgba(198,146,42,0.15);border-radius:16px;padding:4px 4px 4px 14px;transition:border-color 0.3s}
+.input-box:focus-within{border-color:var(--gold);box-shadow:0 0 0 4px rgba(198,146,42,0.1)}
+.input-box textarea{flex:1;background:transparent;border:none;color:var(--text);font-size:14px;font-family:'Readex Pro','Noto Kufi Arabic',sans-serif;resize:none;line-height:1.6;padding:10px 0;direction:rtl;min-height:24px;max-height:100px;outline:none}
+.input-box textarea::placeholder{color:var(--text3)}
+.send-btn{width:42px;height:42px;border-radius:12px;border:none;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all 0.2s;color:#fff}
+.send-btn:hover{transform:scale(1.08)}
+.send-btn:active{transform:scale(0.95)}
+.bottom-cmds{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.bottom-cmd{padding:5px 14px;border-radius:10px;background:var(--bg);border:1px solid rgba(0,0,0,0.06);color:var(--text3);font-size:11px;font-family:'Readex Pro',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.03)}
+.bottom-cmd:hover{transform:translateY(-2px);box-shadow:var(--shadow);color:var(--gold)}
+ 
+@media(max-width:768px){
+.sidebar{width:260px}
+.features{grid-template-columns:repeat(2,1fr)}
+.msg{max-width:95%}
+.welcome h1{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
+ 
+const MODES=[
+{id:"lesson",name:"تحضير الدروس",icon:"📚",color:"#C6922A",light:"#FFF5E0",gradient:"linear-gradient(135deg,#C6922A,#E0AA3E)",desc:"خطط دروس اللغة العربية",prompt:"أنت أركان — وكيل ذكي متخصص في تحضير دروس اللغة العربية لمدرسة طارق بن زياد الإعدادية للبنين في قطر. أنشئ خطط دروس شاملة تتضمن: الأهداف السلوكية، الكفايات، استراتيجيات التدريس، التقويم، الأنشطة، التمايز."},
+{id:"tasks",name:"إدارة المهام",icon:"⚡",color:"#2563A8",light:"#E8F1FC",gradient:"linear-gradient(135deg,#2563A8,#3B82D6)",desc:"تنظيم وتنفيذ المهام",prompt:"أنت أركان — وكيل ذكي لإدارة مهام المعلمين. ساعد في تنظيم المهام وتحديد الأولويات وتقسيمها لخطوات."},
+{id:"files",name:"معالجة الملفات",icon:"📄",color:"#1B7A5A",light:"#E5F5EE",gradient:"linear-gradient(135deg,#1B7A5A,#28A87A)",desc:"إنشاء وتنسيق المستندات",prompt:"أنت أركان — وكيل ذكي لمعالجة الملفات والمستندات التعليمية."},
+{id:"research",name:"البحث والتحليل",icon:"🔍",color:"#C43B50",light:"#FCE8EC",gradient:"linear-gradient(135deg,#C43B50,#E05468)",desc:"بحث تربوي وتحليل",prompt:"أنت أركان — وكيل ذكي للبحث والتحليل التربوي."},
+{id:"creative",name:"الإبداع والكتابة",icon:"✨",color:"#7C3AED",light:"#F0E8FC",gradient:"linear-gradient(135deg,#7C3AED,#9F67FF)",desc:"كتابة إبداعية ومحتوى",prompt:"أنت أركان — وكيل ذكي للكتابة الإبداعية والمحتوى التعليمي باللغة العربية الفصحى."},
+{id:"auto",name:"التنفيذ التلقائي",icon:"🤖",color:"#D97706",light:"#FEF3E0",gradient:"linear-gradient(135deg,#D97706,#F59E0B)",desc:"سلاسل أوامر متعددة",prompt:"أنت أركان — وكيل ذكي متقدم لتنفيذ سلاسل أوامر معقدة خطوة بخطوة."}
+];
+ 
+const QUICK=[
+{label:"حضّر درس نحو",cmd:"حضّر لي درساً شاملاً في النحو عن الفاعل للصف السابع",mode:"lesson"},
+{label:"خطة أسبوعية",cmd:"أنشئ خطة أسبوعية لتدريس القراءة للصف الثامن تتضمن 5 حصص",mode:"lesson"},
+{label:"نظّم مهامي",cmd:"ساعدني في تنظيم مهام هذا الأسبوع: تحضير دروس، تصحيح أوراق، اجتماع أولياء أمور",mode:"tasks"},
+{label:"تقرير أداء",cmd:"أنشئ تقرير أداء شهري للطلاب يتضمن نقاط القوة والضعف والتوصيات",mode:"files"},
+{label:"حلّل نتائج",cmd:"حلّل نتائج اختبار اللغة العربية واقترح خطة علاجية",mode:"research"},
+{label:"مقال تربوي",cmd:"اكتب مقالاً تربوياً عن أهمية القراءة في تنمية مهارات التفكير",mode:"creative"}
+];
+ 
+const PIPES={
+lesson:["تحليل متطلبات الدرس","تحديد الأهداف والكفايات","اختيار الاستراتيجيات","بناء الأنشطة والتقويم","المراجعة النهائية"],
+tasks:["تحليل المهام","تحديد الأولويات","تقسيم المهام","إنشاء الجدول الزمني"],
+files:["تحليل نوع المستند","إعداد الهيكل","كتابة المحتوى","التنسيق والمراجعة"],
+research:["تحديد المحاور","جمع البيانات","التحليل","استخلاص النتائج"],
+creative:["فهم الموضوع","العصف الذهني","الكتابة الأولية","التنقيح"],
+auto:["تحليل الأمر","تقسيم لخطوات","تنفيذ تسلسلي","تجميع النتائج","مراجعة شاملة"]
+};
+ 
+function App(){
+const[mode,setMode]=useState("lesson");
+const[msgs,setMsgs]=useState([]);
+const[input,setInput]=useState("");
+const[loading,setLoading]=useState(false);
+const[pipe,setPipe]=useState([]);
+const[pipeIdx,setPipeIdx]=useState(-1);
+const[sidebar,setSidebar]=useState(window.innerWidth>768);
+const[stats,setStats]=useState({total:0,lessons:0,tasks:0});
+const endRef=useRef(null);
+const cur=MODES.find(m=>m.id===mode);
+ 
+useEffect(()=>{endRef.current?.scrollIntoView({behavior:"smooth"})},[msgs,loading]);
+ 
+const runPipe=useCallback(async(steps)=>{
+setPipe(steps);
+for(let i=0;i<steps.length;i++){setPipeIdx(i);await new Promise(r=>setTimeout(r,700+Math.random()*500))}
+setPipeIdx(steps.length);
+},[]);
+ 
+const send=useCallback(async(text,modeOvr)=>{
+if(!text.trim()||loading)return;
+const m=modeOvr||mode;
+if(modeOvr)setMode(modeOvr);
+const mc=MODES.find(x=>x.id===m);
+setMsgs(p=>[...p,{role:"user",content:text,time:new Date(),mode:m}]);
+setInput("");setLoading(true);
+runPipe(PIPES[m]||PIPES.auto);
+try{
+const res=await fetch("https://api.anthropic.com/v1/messages",{
+method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
+system:mc.prompt+"\n\nقواعد:\n- رد بالعربية الفصحى\n- نظّم بعناوين (##) وترقيم\n- كن شاملاً ومفصلاً",
+messages:[...msgs.filter(x=>x.role==="user"||x.role==="assistant").slice(-10).map(x=>({role:x.role,content:x.content})),{role:"user",content:text}]})
+});
+const data=await res.json();
+const reply=data.content?.map(c=>c.text||"").join("")||"عذراً، حدث خطأ. حاول مرة أخرى.";
+setMsgs(p=>[...p,{role:"assistant",content:reply,time:new Date(),mode:m}]);
+setStats(s=>({total:s.total+1,lessons:m==="lesson"?s.lessons+1:s.lessons,tasks:m==="tasks"?s.tasks+1:s.tasks}));
+}catch(e){
+setMsgs(p=>[...p,{role:"assistant",content:"⚠️ تعذر الاتصال بالخادم.\n\nتأكد من اتصالك بالإنترنت وحاول مرة أخرى.",time:new Date(),mode:m}]);
+}finally{setLoading(false);setPipe([]);setPipeIdx(-1)}
+},[mode,msgs,loading,runPipe]);
+ 
+const fmt=(text)=>text.split("\n").map((line,i)=>{
+const t=line.trim();
+if(!t)return React.createElement("div",{key:i,style:{height:6}});
+if(t.startsWith("## "))return React.createElement("h3",{key:i,style:{color:cur.color}},t.slice(3));
+if(t.startsWith("### "))return React.createElement("h4",{key:i},t.slice(4));
+if(t.match(/^\d+[\.\)]/))return React.createElement("div",{key:i,className:"step",style:{borderRightColor:cur.color+"40",background:cur.light+"80"}},
+React.createElement("span",{className:"step-num",style:{color:cur.color}},t.match(/^\d+[\.\)]/)[0]),
+React.createElement("span",null,t.replace(/^\d+[\.\)]\s*/,"")));
+if(t.startsWith("- ")||t.startsWith("* "))return React.createElement("div",{key:i,className:"bullet"},
+React.createElement("span",{className:"bullet-dot",style:{color:cur.color}},"◆"),
+React.createElement("span",null,t.slice(2)));
+return React.createElement("p",{key:i},t);
+});
+ 
+return React.createElement("div",{className:"app"},
+React.createElement("div",{className:"bg-deco bg-deco-1"}),
+React.createElement("div",{className:"bg-deco bg-deco-2"}),
+React.createElement("div",{className:"bg-pattern"}),
+ 
+// Sidebar
+React.createElement("aside",{className:"sidebar"+(sidebar?"":" hidden")},
+React.createElement("div",{className:"sidebar-logo"},
+React.createElement("div",{className:"logo-icon"},"🏛️",React.createElement("div",{className:"logo-dot"})),
+React.createElement("div",null,
+React.createElement("div",{className:"logo-text"},"أركان"),
+React.createElement("div",{className:"logo-sub"},"ARKAN AGENT"))),
+React.createElement("div",{className:"stats"},
+[{n:stats.total,l:"إجمالي",c:"var(--gold)",bg:"var(--gold-light)"},{n:stats.lessons,l:"دروس",c:"var(--emerald)",bg:"var(--emerald-light)"},{n:stats.tasks,l:"مهام",c:"var(--sapphire)",bg:"var(--sapphire-light)"}].map((s,i)=>
+React.createElement("div",{key:i,className:"stat",style:{background:s.bg,borderRadius:12}},
+React.createElement("div",{className:"stat-num",style:{color:s.c}},s.n),
+React.createElement("div",{className:"stat-label",style:{color:s.c+"99"}},s.l)))),
+React.createElement("div",{className:"modes"},
+React.createElement("div",{className:"modes-title"},"أوضاع العمل"),
+MODES.map(m=>React.createElement("button",{key:m.id,className:"mode-btn"+(mode===m.id?" active":""),
+style:{background:mode===m.id?m.light:"transparent",color:mode===m.id?m.color:"var(--text2)",fontWeight:mode===m.id?600:400,borderRightColor:mode===m.id?m.color:"transparent"},
+onClick:()=>setMode(m.id)},
+React.createElement("span",{className:"icon",style:{background:mode===m.id?m.color+"18":"var(--bg)",fontSize:20}},m.icon),
+React.createElement("div",null,
+React.createElement("div",{className:"name"},m.name),
+React.createElement("div",{className:"desc"},m.desc))))),
+React.createElement("div",{className:"sidebar-footer"},"🏛️ أركان v2.0 — مدعوم بـ Claude AI")),
+ 
+// Main
+React.createElement("main",{className:"main"},
+React.createElement("header",{className:"header"},
+React.createElement("button",{className:"menu-btn",onClick:()=>setSidebar(s=>!s)},"☰"),
+React.createElement("div",{className:"mode-badge",style:{background:cur.light,border:"1px solid "+cur.color+"20",color:cur.color}},
+React.createElement("span",null,cur.icon),cur.name),
+pipe.length>0&&pipeIdx<pipe.length&&React.createElement("div",{className:"header-pipe"},
+React.createElement("div",{className:"spinner"}),
+React.createElement("span",{style:{fontSize:11,color:"var(--gold)",fontWeight:600}},pipe[pipeIdx]),
+React.createElement("span",{style:{fontSize:10,color:"var(--text3)"}},(pipeIdx+1)+"/"+pipe.length)),
+React.createElement("button",{className:"new-chat-btn",onClick:()=>setMsgs([])},"✦ محادثة جديدة")),
+ 
+React.createElement("div",{className:"messages"},
+msgs.length===0&&React.createElement("div",{className:"welcome"},
+React.createElement("div",{style:{textAlign:"center"}},
+React.createElement("div",{className:"welcome-logo"},"🏛️"),
+React.createElement("h1",null,"أركان"),
+React.createElement("div",{className:"sub"},"ARKAN SMART AGENT"),
+React.createElement("p",null,"وكيلك الذكي لتحضير الدروس وإدارة المهام التعليمية. اختر وضع العمل أو اكتب أمرك مباشرة.")),
+React.createElement("div",{className:"quick-cmds"},
+QUICK.map((q,i)=>{const mc=MODES.find(x=>x.id===q.mode);return React.createElement("button",{key:i,className:"quick-btn",
+style:{background:mc.light,borderColor:mc.color+"25",color:mc.color},
+onClick:()=>send(q.cmd,q.mode)},React.createElement("span",null,mc.icon),q.label)})),
+React.createElement("div",{className:"features"},
+[{icon:"🧠",title:"ذكاء تكيّفي",desc:"يفهم السياق التعليمي العربي",c:"var(--gold)"},
+{icon:"⛓️",title:"تنفيذ متسلسل",desc:"خطوة بخطوة مع تتبع مرئي",c:"var(--sapphire)"},
+{icon:"📊",title:"مخرجات متنوعة",desc:"دروس، تقارير، خطط، ملفات",c:"var(--emerald)"}].map((f,i)=>
+React.createElement("div",{key:i,className:"feature"},
+React.createElement("div",{className:"fi"},f.icon),
+React.createElement("div",{className:"ft"},f.title),
+React.createElement("div",{className:"fd"},f.desc))))),
+ 
+msgs.map((msg,i)=>{
+const isUser=msg.role==="user";
+const mc=MODES.find(x=>x.id===msg.mode)||cur;
+return React.createElement("div",{key:i,className:"msg "+(isUser?"user":"bot")},
+!isUser&&React.createElement("div",{className:"msg-avatar",style:{background:mc.light,border:"1px solid "+mc.color+"20"}},mc.icon),
+React.createElement("div",{className:"msg-bubble",style:isUser?{background:mc.gradient,border:"none",color:"#fff",boxShadow:"0 4px 16px "+mc.color+"30"}:{}},
+isUser?React.createElement("p",{style:{margin:0}},msg.content):fmt(msg.content),
+React.createElement("div",{className:"msg-time",style:{textAlign:isUser?"left":"right",color:isUser?"rgba(255,255,255,0.6)":"var(--text3)"}},
+msg.time?.toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit"}),
+!isUser&&React.createElement("span",{className:"msg-mode",style:{color:mc.color}},"⟡ "+mc.name))))}),
+ 
+loading&&React.createElement("div",{className:"msg bot"},
+React.createElement("div",{className:"msg-avatar",style:{background:cur.light,border:"1px solid "+cur.color+"20"}},cur.icon),
+React.createElement("div",{className:"msg-bubble",style:{minWidth:200}},
+React.createElement("div",{className:"typing-dots"},
+[0,1,2].map(i=>React.createElement("div",{key:i,className:"typing-dot",style:{background:cur.gradient,animation:"typeBounce 1.4s ease-in-out "+(i*0.18)+"s infinite"}}))),
+pipe.length>0&&React.createElement("div",{className:"pipe-container"},
+pipe.map((step,idx)=>React.createElement("div",{key:idx,className:"pipe-step",style:{
+borderRight:"3px solid "+(idx<pipeIdx?"var(--emerald)":idx===pipeIdx?cur.color:"#e0ddd5"),
+background:idx===pipeIdx?cur.light:idx<pipeIdx?"var(--emerald-light)":"transparent",
+opacity:idx<=pipeIdx?1:0.35,borderRadius:"0 10px 10px 0"}},
+React.createElement("div",{className:"pipe-num",style:{
+background:idx<pipeIdx?"var(--emerald)":idx===pipeIdx?cur.color:"#e0ddd5",
+color:idx<=pipeIdx?"#fff":"var(--text3)"}},idx<pipeIdx?"✓":idx+1),
+React.createElement("span",{style:{fontSize:12,fontWeight:500,color:idx===pipeIdx?cur.color:idx<pipeIdx?"var(--emerald)":"var(--text3)"}},step)))))),
+ 
+React.createElement("div",{ref:endRef})),
+ 
+React.createElement("div",{className:"input-area"},
+React.createElement("div",{className:"input-box"},
+React.createElement("textarea",{value:input,onChange:e=>setInput(e.target.value),
+onKeyDown:e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send(input)}},
+placeholder:"اكتب أمرك لأركان... ("+cur.name+")",rows:1,disabled:loading}),
+React.createElement("button",{className:"send-btn",disabled:!input.trim()||loading,
+style:{background:input.trim()&&!loading?cur.gradient:"#e0ddd5",
+opacity:input.trim()&&!loading?1:0.4},onClick:()=>send(input)},"⬆")),
+React.createElement("div",{className:"bottom-cmds"},
+QUICK.slice(0,4).map((q,i)=>{const mc=MODES.find(x=>x.id===q.mode);
+return React.createElement("button",{key:i,className:"bottom-cmd",onClick:()=>send(q.cmd,q.mode)},mc.icon," ",q.label)}))))
+);
+}
+ 
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+</script>
+</body>
+</html>
